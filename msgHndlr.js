@@ -44,16 +44,16 @@ module.exports = msgHandler = async (client, message) => {
         }
 
         const mess = {
-            wait: '[ WAIT ] Sedang di proses⏳ silahkan tunggu sebentar',
+            wait: '⏳ Un instant, je m´occupe de votre demande avec le plus grand sion.',
             error: {
-                St: '[❗] Kirim gambar dengan caption *!sticker* atau tag gambar yang sudah dikirim',
-                Qm: '[❗] Terjadi kesalahan, mungkin themenya tidak tersedia!',
-                Yt3: '[❗] Terjadi kesalahan, tidak dapat meng konversi ke mp3!',
-                Yt4: '[❗] Terjadi kesalahan, mungkin error di sebabkan oleh sistem.',
-                Ig: '[❗] Terjadi kesalahan, mungkin karena akunnya private',
-                Ki: '[❗] Bot tidak bisa mengeluarkan admin group!',
-                Ad: '[❗] Tidak dapat menambahkan target, mungkin karena di private',
-                Iv: '[❗] Link yang anda kirim tidak valid!'
+                St: '[❗] Veuillez envoyer une image avec la commande *!sticker*, ou répondre à une image déjà envoyée.',
+                Qm: '[❗] Je vous prie de m excuser, une erreur est survenue. Il est possible que le thème démandé ne soit pas disponible.',
+                Yt3: '[❗] Je suis navré, la conversion en MP3 n´as pu être éffectuée.',
+                Yt4: '[❗] Je vous prie de méxcuser, une erreur est survenue lors du traitement de la vidéo.',
+                Ig: '[❗] Je suis désolé, il se peut que le compte soit privé inaccessible.',
+                Ki: '[❗] Je voudrais repondre à votre demande, mais il m´est impossible de supprimer un Administrateur de ce groupe.',
+                Ad: '[❗] Je ne peux pas ajouter cet utilisateur. Il est possible que ce soit ses paramètres de confidentialité qui font obstacle à son intergration parmis Nous.',
+                Iv: '[❗] Le lien que vous m´avez fourni est invalide selon mes sources.'
             }
         }
         const apiKey = 'API-KEY' // apikey you can get it at https://mhankbarbar.moe
@@ -64,7 +64,7 @@ module.exports = msgHandler = async (client, message) => {
         const groupAdmins = isGroupMsg ? await client.getGroupAdmins(groupId) : ''
         const isGroupAdmins = isGroupMsg ? groupAdmins.includes(sender.id) : false
         const isBotGroupAdmins = isGroupMsg ? groupAdmins.includes(botNumber + '@c.us') : false
-        const ownerNumber = ["628xxx@c.us","55xxxxx"] // replace with your whatsapp number
+        const ownerNumber = ["2250160098804@c.us","2250160098804"] // replace with your whatsapp number
         const isOwner = ownerNumber.includes(sender.id)
         const isBlocked = blockNumber.includes(sender.id)
         const isNsfw = isGroupMsg ? nsfw_.includes(chat.id) : false
@@ -105,7 +105,7 @@ module.exports = msgHandler = async (client, message) => {
             if (isMedia) {
                 if (mimetype === 'video/mp4' && message.duration < 10 || mimetype === 'image/gif' && message.duration < 10) {
                     const mediaData = await decryptMedia(message, uaOverride)
-                    client.reply(from, '[WAIT] Sedang di proses⏳ silahkan tunggu ± 1 min!', id)
+                    client.reply(from, '⏳ Veuillez patienter un instant, je traite votre demande', id)
                     const filename = `./media/aswu.${mimetype.split('/')[1]}`
                     await fs.writeFileSync(filename, mediaData)
                     await exec(`gify ${filename} ./media/output.gif --fps=30 --scale=240:240`, async function (error, stdout, stderr) {
@@ -113,7 +113,7 @@ module.exports = msgHandler = async (client, message) => {
                         await client.sendImageAsSticker(from, `data:image/gif;base64,${gif.toString('base64')}`)
                     })
                 } else (
-                    client.reply(from, '[❗] Kirim video dengan caption *!stickerGif* max 10 sec!', id)
+                    client.reply(from, '[❗] Veuillez envoyer une vidéo de moins de 10 secondes avec la commande *!stickerGif* ', id)
                 )
             }
             break
@@ -136,17 +136,15 @@ module.exports = msgHandler = async (client, message) => {
             break
         case '!donasi':
         case '!donate':
-            client.sendLinkWithAutoPreview(from, 'https://saweria.co/donate/mhankbarbar', donate)
+            client.sendLinkWithAutoPreview(from, 'https://wa.me/2250160098804?text=Je%voudrais%20payer%20par%20Wave', donate)
             break
         case '!tts':
-            if (args.length === 1) return client.reply(from, 'Kirim perintah *!tts [id, en, jp, ar] [teks]*, contoh *!tts id halo semua*')
-            const ttsId = require('node-gtts')('id')
+            if (args.length === 1) return client.reply(from, 'Veuillez utiliser la commande *!tts [en, jp] [texte]*'
             const ttsEn = require('node-gtts')('en')
 	    const ttsJp = require('node-gtts')('ja')
-            const ttsAr = require('node-gtts')('ar')
             const dataText = body.slice(8)
-            if (dataText === '') return client.reply(from, 'Baka?', id)
-            if (dataText.length > 500) return client.reply(from, 'Teks terlalu panjang!', id)
+            if (dataText === '') return client.reply(from, 'Veuillez entrer un texte à convertir', id)
+            if (dataText.length > 500) return client.reply(from, 'Le texte est trop long, Veuillez le raccourcir', id)
             var dataBhs = body.slice(5, 7)
 	        if (dataBhs == 'id') {
                 ttsId.save('./media/tts/resId.mp3', dataText, function () {
@@ -165,22 +163,22 @@ module.exports = msgHandler = async (client, message) => {
                     client.sendPtt(from, './media/tts/resAr.mp3', id)
                 })
             } else {
-                client.reply(from, 'Masukkan data bahasa : [id] untuk indonesia, [en] untuk inggris, [jp] untuk jepang, dan [ar] untuk arab', id)
+                client.reply(from, 'Veuillez choisir une langue presente dans mon catalogue s´il vous plaît : [en] l´anglais, [jp] le Japonais', id)
             }
             break
         case '!nulis':
-            if (args.length === 1) return client.reply(from, 'Kirim perintah *!nulis [teks]*', id)
+            if (args.length === 1) return client.reply(from, 'Veuillez utilise la commande *!nulis [texte]*', id)
             const nulis = encodeURIComponent(body.slice(7))
             client.reply(from, mess.wait, id)
             let urlnulis = `https://mhankbarbar.moe/api/nulis?font=1&buku=1&text=${nulis}&apiKey=${apiKey}`
             await fetch(urlnulis, {method: "GET"})
             .then(res => res.json())
             .then(async (json) => {
-                await client.sendFileFromUrl(from, json.result, 'Nulis.jpg', 'Nih anjim', id)
-            }).catch(e => client.reply(from, "Error: "+ e));
+                await client.sendFileFromUrl(from, json.result, 'Nulis.jpg', 'Voici le resultat de votre demande', id)
+            }).catch(e => client.reply(from, "Une erreur est survenue : "+ e));
             break
         case '!ytmp3':
-            if (args.length === 1) return client.reply(from, 'Kirim perintah *!ytmp3 [linkYt]*, untuk contoh silahkan kirim perintah *!readme*')
+            if (args.length === 1) return client.reply(from, 'Veuillez utiliser la commandes *!ytmp3 [lien Youtube]*, Pour un exemple utilisez *!readme*')
             let isLinks = args[1].match(/(?:https?:\/{2})?(?:w{3}\.)?youtu(?:be)?\.(?:com|be)(?:\/watch\?v=|\/)([^\s&]+)/)
             if (!isLinks) return client.reply(from, mess.error.Iv, id)
             try {
@@ -190,8 +188,8 @@ module.exports = msgHandler = async (client, message) => {
                     client.reply(from, resp.error, id)
                 } else {
                     const { title, thumb, filesize, result } = await resp
-                    if (Number(filesize.split(' MB')[0]) >= 30.00) return client.reply(from, 'Maaf durasi video sudah melebihi batas maksimal!', id)
-                    client.sendFileFromUrl(from, thumb, 'thumb.jpg', `➸ *Title* : ${title}\n➸ *Filesize* : ${filesize}\n\nSilahkan tunggu sebentar proses pengiriman file membutuhkan waktu beberapa menit.`, id)
+                    if (Number(filesize.split(' MB')[0]) >= 30.00) return client.reply(from, 'La musique est bien trop longue pour être téléchargée par ma technique.', id)
+                    client.sendFileFromUrl(from, thumb, 'thumb.jpg', `➸ *Title* : ${title}\n➸ *Filesize* : ${filesize}\n\nAttendez un instant, l'envoie du ficier peut prendre un certain temps.`, id)
                     await client.sendFileFromUrl(from, result, `${title}.mp3`, '', id).catch(() => client.reply(from, mess.error.Yt3, id))
                     //await client.sendAudio(from, result, id)
                 }
@@ -201,7 +199,7 @@ module.exports = msgHandler = async (client, message) => {
             }
             break
         case '!ytmp4':
-            if (args.length === 1) return client.reply(from, 'Kirim perintah *!ytmp4 [linkYt]*, untuk contoh silahkan kirim perintah *!readme*')
+            if (args.length === 1) return client.reply(from, 'Veuillez utiliser la commandes *!ytmp4 [lien Youtube]*, Pour un exemple utilisez *!readme*')
             let isLin = args[1].match(/(?:https?:\/{2})?(?:w{3}\.)?youtu(?:be)?\.(?:com|be)(?:\/watch\?v=|\/)([^\s&]+)/)
             if (!isLin) return client.reply(from, mess.error.Iv, id)
             try {
@@ -210,8 +208,8 @@ module.exports = msgHandler = async (client, message) => {
                 if (ytv.error) {
                     client.reply(from, ytv.error, id)
                 } else {
-                    if (Number(ytv.filesize.split(' MB')[0]) > 40.00) return client.reply(from, 'Maaf durasi video sudah melebihi batas maksimal!', id)
-                    client.sendFileFromUrl(from, ytv.thumb, 'thumb.jpg', `➸ *Title* : ${ytv.title}\n➸ *Filesize* : ${ytv.filesize}\n\nSilahkan tunggu sebentar proses pengiriman file membutuhkan waktu beberapa menit.`, id)
+                    if (Number(ytv.filesize.split(' MB')[0]) > 40.00) return client.reply(from, 'La vidéo est bien trop longue pour être téléchargée par ma technique.', id)
+                    client.sendFileFromUrl(from, ytv.thumb, 'thumb.jpg', `➸ *Title* : ${ytv.title}\nAttendez un instant, l'envoie du ficier peut prendre un certain temps *Filesize* : ${ytv.filesize}\n\n.`, id)
                     await client.sendFileFromUrl(from, ytv.result, `${ytv.title}.mp4`, '', id).catch(() => client.reply(from, mess.error.Yt4, id))
                 }
             } catch (er) {
@@ -484,7 +482,7 @@ module.exports = msgHandler = async (client, message) => {
                 hehe += '╠➥'
                 hehe += ` @${groupMem[i].id.replace(/@c.us/g, '')}\n`
             }
-            hehe += '╚═〘 Shinomiya Kaguya BOT 〙'
+            hehe += '╚═〘 𝗦𝝨𝝗𝝙𝗦𝝩𝝞𝝙𝝥 〙'
             await client.sendTextWithMentions(from, hehe)
             break
         case '!kickall':
@@ -500,7 +498,7 @@ module.exports = msgHandler = async (client, message) => {
                     await client.removeParticipant(groupId, allMem[i].id)
                 }
             }
-            client.reply(from, 'Succes kick all member', id)
+            client.reply(from, 'Tout les Nuisibles sont dehors MR...', id)
             break
         case '!leaveall':
             if (!isOwner) return client.reply(from, 'Perintah ini hanya untuk Owner bot', id)
